@@ -17,4 +17,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction()) // أضف
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-app.Run();
+
+// ⭐ هنا نستخدم PORT من متغيرات البيئة
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Run($"http://0.0.0.0:{port}");
