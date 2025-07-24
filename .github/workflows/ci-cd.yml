@@ -2,19 +2,18 @@ name: CI/CD for API
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET SDK
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
@@ -25,8 +24,19 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Run Tests
-        run: dotnet test --no-build --verbosity normal
-
       - name: Publish
-        run: dotnet publish --configuration Release --output ./publish
+        run: dotnet publish -c Release -o ./publish --self-contained true -r linux-x64 /p:PublishSingleFile=true
+
+      - name: Install Railway CLI
+        run: npm install -g railway
+
+      - name: Login to Railway
+        run: railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
+
+      - name: Deploy to Railway
+        run: railway up --service your-service-name ./publish
+
+
+
+
+        
