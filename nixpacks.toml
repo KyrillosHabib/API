@@ -2,7 +2,7 @@
 nixPkgs = ["dotnet-sdk_8"]
 
 [phases.build]
-cmds = ["cd API-CICD && dotnet publish -c Release -o ../out"]
+cmds = ["dotnet publish API-CICD/API-CICD.csproj -c Release -o out"]
 
 [start]
-cmd = "dotnet ../out/API-CICD.dll"
+cmd = "dotnet out/API-CICD.dll"
